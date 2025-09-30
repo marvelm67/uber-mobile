@@ -8,6 +8,8 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 export default function SearchBar() {
   const [searchText, setSearchText] = useState("");
@@ -48,6 +50,32 @@ export default function SearchBar() {
     );
   };
 
+  const handleLocationPress = () => {
+    Alert.alert("Location", "Getting your current location...");
+  };
+
+  const handleSearchPress = () => {
+    Alert.alert("Search", "Search functionality");
+  };
+
+  const renderLeftButton = () => (
+    <TouchableOpacity
+      style={styles.locationButton}
+      onPress={handleLocationPress}
+    >
+      <Icon name="location-sharp" size={20} color="#ff6347" />
+    </TouchableOpacity>
+  );
+
+  const renderRightButton = () => (
+    <TouchableOpacity style={styles.searchButton} onPress={handleSearchPress}>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <AntDesign name="clockcircle" size={11} color="#666" />
+        <Text style={styles.searchButtonText}>Search</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   const renderSuggestion = ({ item }) => (
     <TouchableOpacity
       style={styles.suggestionItem}
@@ -65,21 +93,24 @@ export default function SearchBar() {
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.textInput}
-        placeholder="Search for restaurants, food..."
-        value={searchText}
-        onChangeText={(text) => {
-          setSearchText(text);
-          setShowSuggestions(text.length > 0);
-        }}
-        onFocus={() => setShowSuggestions(searchText.length > 0)}
-        onBlur={() => {
-          // Delay hiding suggestions to allow for selection
-          setTimeout(() => setShowSuggestions(false), 150);
-        }}
-      />
-
+      <View style={styles.searchInputContainer}>
+        {renderLeftButton()}
+        <TextInput
+          style={styles.textInput}
+          placeholder="Search for restaurants, food..."
+          value={searchText}
+          onChangeText={(text) => {
+            setSearchText(text);
+            setShowSuggestions(text.length > 0);
+          }}
+          onFocus={() => setShowSuggestions(searchText.length > 0)}
+          onBlur={() => {
+            // Delay hiding suggestions to allow for selection
+            setTimeout(() => setShowSuggestions(false), 150);
+          }}
+        />
+        {renderRightButton()}
+      </View>
       {showSuggestions && filteredPlaces.length > 0 && (
         <View style={styles.suggestionsContainer}>
           <FlatList
@@ -100,14 +131,37 @@ const styles = StyleSheet.create({
     marginTop: 15,
     zIndex: 1000,
   },
-  textInput: {
+  searchInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: "#eee",
     borderRadius: 20,
-    fontWeight: "700",
-    paddingLeft: 15,
-    paddingRight: 15,
     height: 40,
+  },
+  locationButton: {
+    paddingLeft: 15,
+    paddingRight: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textInput: {
+    flex: 1,
+    fontWeight: "700",
+    paddingHorizontal: 10,
     fontSize: 16,
+    height: 40,
+  },
+  searchButton: {
+    paddingRight: 15,
+    paddingLeft: 10,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  searchButtonText: {
+    fontSize: 12,
+    color: "#666",
+    marginLeft: 4,
+    fontWeight: "500",
   },
   suggestionsContainer: {
     backgroundColor: "white",
